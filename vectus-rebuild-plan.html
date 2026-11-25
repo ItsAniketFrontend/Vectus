@@ -1,0 +1,775 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vectus.in Rebuild Plan</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,500..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: one 1120px reading column. Flowcharts and the timeline sit in full-width panels that scroll sideways on phones.
+   Motif: a thin multi-band stripe, like the cross-section of a multi-layer tank wall. */
+:root{
+  --bg:#F3F5F8; --surface:#FFFFFF; --sunk:#E9EDF2;
+  --fg:#0F1B2A; --muted:#566475; --line:#D3DAE3; --line-strong:#9AA8B8;
+  --accent:#1556C0; --accent-tint:#E2EBFA;
+  --client:#9A5B00; --client-tint:#FBEFDA;
+  --go:#1C7548; --go-tint:#DCF0E4;
+  --font-display:"Archivo","Arial Narrow",system-ui,sans-serif;
+  --font-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,"Cascadia Mono",Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0B121B; --surface:#121C28; --sunk:#182433;
+    --fg:#E5EBF2; --muted:#94A3B5; --line:#273546; --line-strong:#4A5C71;
+    --accent:#71A3F4; --accent-tint:#16294A;
+    --client:#EDB35C; --client-tint:#36270F;
+    --go:#5DC992; --go-tint:#11301F;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0B121B; --surface:#121C28; --sunk:#182433;
+  --fg:#E5EBF2; --muted:#94A3B5; --line:#273546; --line-strong:#4A5C71;
+  --accent:#71A3F4; --accent-tint:#16294A;
+  --client:#EDB35C; --client-tint:#36270F;
+  --go:#5DC992; --go-tint:#11301F;
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.6 var(--font-body)}
+img{max-width:100%}
+a{color:var(--accent)}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:3px}
+
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:40px 72px;display:flex;flex-direction:column;gap:64px}
+
+/* Header */
+.top{display:flex;flex-direction:column;gap:18px}
+.layers{display:grid;grid-template-columns:repeat(6,1fr);height:8px;border-radius:4px;overflow:hidden;max-width:240px}
+.layers i:nth-child(1){background:var(--accent)}
+.layers i:nth-child(2){background:var(--accent-tint)}
+.layers i:nth-child(3){background:var(--line-strong)}
+.layers i:nth-child(4){background:var(--fg)}
+.layers i:nth-child(5){background:var(--line)}
+.layers i:nth-child(6){background:var(--accent)}
+.eyebrow{margin:0;font:500 12px/1.4 var(--font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{margin:0;font-family:var(--font-display);font-stretch:87.5%;font-weight:800;font-size:clamp(36px,6vw,60px);line-height:1.02;letter-spacing:-.01em;text-wrap:balance}
+.lede{margin:0;max-width:64ch;font-size:17px;color:var(--muted)}
+.toc{display:flex;flex-wrap:wrap;gap:8px 20px;padding-top:4px}
+.toc a{font-weight:500;text-decoration:none;border-bottom:1.5px solid var(--line-strong);padding-bottom:2px;color:var(--fg)}
+.toc a:hover{border-color:var(--accent);color:var(--accent)}
+
+.facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.fact{background:var(--surface);padding:16px 18px;display:flex;flex-direction:column;gap:2px}
+.fact b{font-family:var(--font-display);font-stretch:87.5%;font-weight:800;font-size:28px;line-height:1.1}
+.fact span{color:var(--muted);font-size:13.5px;line-height:1.4}
+
+/* Sections */
+section{display:flex;flex-direction:column;gap:20px;scroll-margin-top:16px}
+.sec-head{display:flex;flex-direction:column;gap:6px}
+.kicker{margin:0;font:500 12px/1.4 var(--font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+h2{margin:0;font-family:var(--font-display);font-stretch:87.5%;font-weight:750;font-size:clamp(26px,3.4vw,34px);line-height:1.1;text-wrap:balance}
+h3{margin:0;font-family:var(--font-display);font-stretch:93%;font-weight:700;font-size:19px;line-height:1.25}
+.intro{margin:0;max-width:68ch;color:var(--muted)}
+
+.modules{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.module{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.module strong{font-weight:600}
+.module span{color:var(--muted);font-size:14px;line-height:1.5}
+
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.panel-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px 20px}
+figure{margin:0;display:flex;flex-direction:column;gap:12px;min-width:0}
+figcaption{color:var(--muted);font-size:14px;max-width:72ch}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;min-width:0}
+.swipe-hint{display:none;margin:0;font:500 11.5px var(--font-mono);color:var(--muted)}
+
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.sw{width:14px;height:14px;border-radius:4px;border:1.5px solid var(--line-strong);background:var(--surface);display:inline-block;flex:none}
+.sw.buy{background:var(--accent-tint);border-color:var(--accent)}
+.sw.enq{background:var(--sunk)}
+.sw.go{background:var(--go-tint);border-color:var(--go)}
+.sw.bar{background:var(--accent);border-color:var(--accent)}
+.sw.client{background:var(--client-tint);border-color:var(--client)}
+.sw.launch{background:var(--go);border-color:var(--go)}
+.sw.ms{width:11px;height:11px;border-radius:2px;transform:rotate(45deg);background:var(--fg);border:0}
+
+/* SVG flowcharts */
+.fc{display:block;width:100%;height:auto;min-width:980px;font-family:var(--font-body)}
+.fc.stack-svg{min-width:900px}
+.fc .node{fill:var(--surface);stroke:var(--line-strong);stroke-width:1.25}
+.fc .node.buy{fill:var(--accent-tint);stroke:var(--accent)}
+.fc .node.enq{fill:var(--sunk)}
+.fc .node.go{fill:var(--go-tint);stroke:var(--go)}
+.fc .node.key{stroke:var(--accent);stroke-width:1.75}
+.fc .dia{fill:var(--surface);stroke:var(--fg);stroke-width:1.5}
+.fc .band{fill:var(--sunk);stroke:var(--line-strong);stroke-width:1}
+.fc .t{fill:var(--fg);font-size:13px;font-weight:600;text-anchor:middle}
+.fc .t-lg{fill:var(--fg);font-size:16px;font-weight:700;text-anchor:middle;font-family:var(--font-display)}
+.fc .s{fill:var(--muted);font-size:11px;text-anchor:middle}
+.fc .s2{fill:var(--fg);font-size:12.5px;text-anchor:middle}
+.fc .m{fill:var(--muted);font-size:11px;font-family:var(--font-mono);text-anchor:middle}
+.fc .lbl{fill:var(--muted);font-size:11px;font-family:var(--font-mono)}
+.fc .row-lbl{fill:var(--muted);font-size:10.5px;font-family:var(--font-mono);letter-spacing:.06em}
+.fc .row-lbl.buy{fill:var(--accent)}
+.fc .edge{fill:none;stroke:var(--muted);stroke-width:1.5}
+.fc .edge.buy{stroke:var(--accent)}
+.fc .mk{fill:var(--muted)}
+.fc .mk-b{fill:var(--accent)}
+
+/* Team lanes */
+.lanes{display:flex;flex-direction:column}
+.lane{display:grid;grid-template-columns:150px minmax(0,1fr);gap:12px 18px;padding:14px 0;border-top:1px solid var(--line);align-items:start}
+.lane:first-child{border-top:0;padding-top:4px}
+.lane-who{font-weight:600;padding-top:6px}
+.lane-who small{display:block;font:400 12px/1.4 var(--font-mono);color:var(--muted);margin-top:2px}
+.steps{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;align-items:center;gap:8px 6px}
+.steps li{display:flex;align-items:center;gap:6px;font-size:14px;line-height:1.35}
+.steps li span{background:var(--sunk);border:1px solid var(--line);border-radius:8px;padding:6px 10px}
+.steps li:last-child span{background:var(--go-tint);border-color:var(--go)}
+.steps li + li::before{content:"→";color:var(--muted);font-family:var(--font-mono)}
+
+/* Stack cards */
+.stack{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.stack-card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.stack-card .tools{margin:0;font:500 12.5px/1.5 var(--font-mono);color:var(--accent)}
+.stack-card p{margin:0;font-size:14px;color:var(--muted);line-height:1.5}
+
+/* Gantt */
+.gantt{--cols:minmax(220px,1.4fr) repeat(21,minmax(26px,1fr));min-width:820px;font-size:13.5px}
+.g-head,.g-days,.g-row{display:grid;grid-template-columns:var(--cols);align-items:center}
+.g-week{font:500 11px/1.3 var(--font-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:6px 8px;border-left:1.5px solid var(--line-strong);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.g-days{border-bottom:1px solid var(--line-strong)}
+.g-days span{font:500 11px/1 var(--font-mono);font-variant-numeric:tabular-nums;text-align:center;color:var(--muted);padding:8px 0}
+.g-days .g-lab{font:500 11px/1 var(--font-mono);color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.g-row{min-height:46px;border-bottom:1px solid var(--line)}
+.g-lab{grid-column:1;grid-row:1;padding:8px 14px 8px 0;line-height:1.3;min-width:0}
+.g-lab small{display:block;font:400 11.5px/1.3 var(--font-mono);color:var(--muted);margin-top:3px;font-variant-numeric:tabular-nums}
+.g-track{grid-column:2 / -1;grid-row:1;align-self:stretch;background-image:linear-gradient(to right,var(--line-strong) 1.5px,transparent 1.5px),linear-gradient(to right,var(--line) 1px,transparent 1px);background-size:calc(100% / 3) 100%,calc(100% / 21) 100%}
+.g-bar{grid-row:1;height:18px;margin:0 2px;border-radius:5px;background:var(--accent)}
+.g-bar.client{background:var(--client-tint);border:1.5px solid var(--client)}
+.g-bar.launch{background:var(--go)}
+.g-ms{grid-row:1;justify-self:center;width:12px;height:12px;border-radius:2px;transform:rotate(45deg);background:var(--fg)}
+.g-ms.launch{background:var(--go)}
+.g-row.ms .g-lab{font-weight:600}
+
+.checkpoints{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
+.checkpoints li{display:flex;flex-direction:column;gap:4px;padding-top:10px;border-top:2px solid var(--fg);font-size:14px;line-height:1.4}
+.checkpoints li.launch{border-color:var(--go)}
+.checkpoints b{font:500 12px/1 var(--font-mono);color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+
+/* Needs */
+.needs{display:flex;flex-direction:column;gap:12px}
+.need{display:grid;grid-template-columns:190px minmax(0,1fr);gap:12px 24px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px 20px}
+.need-when{display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.chip{display:inline-block;font:500 12px/1 var(--font-mono);letter-spacing:.05em;text-transform:uppercase;color:var(--client);background:var(--client-tint);border:1px solid var(--client);border-radius:999px;padding:6px 10px}
+.need-when span{font-size:13.5px;color:var(--muted);line-height:1.4}
+.need ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.need li{display:grid;grid-template-columns:16px minmax(0,1fr);gap:12px;align-items:start;line-height:1.45}
+.need li::before{content:"";width:14px;height:14px;margin-top:3px;border:1.5px solid var(--line-strong);border-radius:3px}
+.need li strong{font-weight:600}
+.need li span{color:var(--muted)}
+
+.assumptions{background:var(--sunk);border:1px solid var(--line);border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;gap:12px}
+.assumptions ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px;max-width:80ch}
+.assumptions li::marker{color:var(--muted)}
+
+footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 24px;border-top:1px solid var(--line);padding-top:18px;color:var(--muted);font-size:13px}
+
+@media (max-width:900px){
+  .modules,.stack{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .checkpoints{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .swipe-hint{display:block}
+}
+@media (max-width:620px){
+  .wrap{gap:48px;padding-block:28px 56px}
+  .facts{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .modules,.stack{grid-template-columns:minmax(0,1fr)}
+  .checkpoints{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .lane{grid-template-columns:minmax(0,1fr);gap:8px}
+  .lane-who{padding-top:0}
+  .need{grid-template-columns:minmax(0,1fr);padding:16px}
+  .panel{padding:16px}
+}
+@media print{
+  body{font-size:12.5px}
+  .wrap{padding-block:0;gap:32px}
+  .scroll{overflow:visible}
+  .fc,.fc.stack-svg{min-width:0}
+  .gantt{min-width:0;--cols:180px repeat(21,1fr)}
+  .swipe-hint,.toc{display:none}
+  .panel,.need,.module,.stack-card,.lane{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="layers" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <p class="eyebrow">Prepared for Vectus Polymers Pvt. Ltd. · November 2026</p>
+    <h1>Vectus.in rebuild</h1>
+    <p class="lede">How customers and your teams will use the new website, the technology behind it, the 21-day plan to go live, and what we need from you to hit that date.</p>
+    <nav class="toc" aria-label="Sections">
+      <a href="#customer-flows">Customer flows</a>
+      <a href="#team-flows">Team workflows</a>
+      <a href="#technology">Technology</a>
+      <a href="#timeline">21-day timeline</a>
+      <a href="#from-you">What we need from you</a>
+    </nav>
+  </header>
+
+  <div class="facts">
+    <div class="fact"><b>21 days</b><span>From kickoff to go-live, with launch on Day 20</span></div>
+    <div class="fact"><b>Same URLs</b><span>Existing page addresses stay, so Google rankings carry over</span></div>
+    <div class="fact"><b>~400 products</b><span>Moved from Shopify with images, specs and SEO text</span></div>
+    <div class="fact"><b>1 admin panel</b><span>Separate access for SEO, HR, sales, store and service teams</span></div>
+  </div>
+
+  <section id="scope" aria-labelledby="scope-h">
+    <div class="sec-head">
+      <p class="kicker">What we are building</p>
+      <h2 id="scope-h">A custom website your teams run themselves</h2>
+    </div>
+    <div class="modules">
+      <div class="module"><strong>Website and page editor</strong><span>Every current page rebuilt. Your team edits text, images and sections without a developer.</span></div>
+      <div class="module"><strong>SEO control</strong><span>Meta titles, descriptions, schema, redirects and sitemaps, all managed from the admin panel.</span></div>
+      <div class="module"><strong>Online store</strong><span>Add to Cart and Buy Now on the products you choose. Razorpay payments, GST invoices, Shiprocket delivery.</span></div>
+      <div class="module"><strong>Enquiry for other products</strong><span>Every other product shows Enquire Now. Leads go to the sales team for that state.</span></div>
+      <div class="module"><strong>Compare</strong><span>Customers compare up to 4 products side by side: capacity in litres, layers, material, warranty.</span></div>
+      <div class="module"><strong>Blog</strong><span>Your content team writes, schedules and publishes posts with images, FAQs and related products.</span></div>
+      <div class="module"><strong>Careers</strong><span>HR posts jobs, receives CVs and moves candidates from shortlist to hire.</span></div>
+      <div class="module"><strong>QR warranty portal</strong><span>Customers scan the QR code on a product, register the warranty and raise service claims.</span></div>
+      <div class="module"><strong>Animated design</strong><span>Smooth scrolling and product assembly animations, such as the layers of a Ten-X tank coming together.</span></div>
+    </div>
+  </section>
+
+  <section id="customer-flows" aria-labelledby="cf-h">
+    <div class="sec-head">
+      <p class="kicker">User flow · Customers</p>
+      <h2 id="cf-h">Two customer journeys</h2>
+      <p class="intro">Customers come to the site to do one of two things: buy or enquire about a product, or register the warranty on a product they already own.</p>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <h3>Buying or enquiring</h3>
+        <div class="legend">
+          <span><i class="sw buy"></i>Online purchase (products you enable)</span>
+          <span><i class="sw enq"></i>Enquiry (all other products)</span>
+        </div>
+      </div>
+      <figure>
+        <p class="swipe-hint">Swipe sideways to see the whole chart →</p>
+        <div class="scroll">
+          <svg class="fc" viewBox="0 0 1068 328" role="img" aria-label="Customer finds Vectus, browses, opens a product page and can add it to compare. If the product is sold online they add it to cart, check out and get an order confirmation. If not, they send an enquiry that goes to the state sales team, who call back or point them to the nearest dealer.">
+            <defs>
+              <marker id="a-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="mk" d="M0,0 L10,5 L0,10 z"/></marker>
+              <marker id="a-arr-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="mk-b" d="M0,0 L10,5 L0,10 z"/></marker>
+            </defs>
+
+            <!-- edges -->
+            <path class="edge" d="M144 170 H167" marker-end="url(#a-arr)"/>
+            <path class="edge" d="M296 170 H319" marker-end="url(#a-arr)"/>
+            <path class="edge" d="M448 170 H471" marker-end="url(#a-arr)"/>
+            <path class="edge buy" d="M532 126 V74 H619" marker-end="url(#a-arr-b)"/>
+            <path class="edge" d="M532 214 V266 H619" marker-end="url(#a-arr)"/>
+            <path class="edge buy" d="M748 74 H771" marker-end="url(#a-arr-b)"/>
+            <path class="edge buy" d="M900 74 H923" marker-end="url(#a-arr-b)"/>
+            <path class="edge" d="M748 266 H771" marker-end="url(#a-arr)"/>
+            <path class="edge" d="M900 266 H923" marker-end="url(#a-arr)"/>
+            <path class="edge" d="M384 204 V249" marker-start="url(#a-arr)" marker-end="url(#a-arr)"/>
+
+            <!-- edge labels -->
+            <text class="lbl" x="542" y="104">Yes</text>
+            <text class="lbl" x="542" y="244">No</text>
+            <text class="lbl" x="374" y="231" text-anchor="end">Add to Compare</text>
+            <text class="row-lbl buy" x="620" y="30">BUY ONLINE · SELECTED PRODUCTS</text>
+            <text class="row-lbl" x="620" y="224">ENQUIRY · ALL OTHER PRODUCTS</text>
+
+            <!-- main row -->
+            <rect class="node" x="16" y="137" width="128" height="66" rx="10"/>
+            <text class="t" x="80" y="161">Finds Vectus</text>
+            <text class="s" x="80" y="179">Google, ads,</text>
+            <text class="s" x="80" y="193">social, WhatsApp</text>
+
+            <rect class="node" x="168" y="137" width="128" height="66" rx="10"/>
+            <text class="t" x="232" y="161">Browses</text>
+            <text class="s" x="232" y="179">Category pages,</text>
+            <text class="s" x="232" y="193">search, filters</text>
+
+            <rect class="node key" x="320" y="137" width="128" height="66" rx="10"/>
+            <text class="t" x="384" y="161">Product page</text>
+            <text class="s" x="384" y="179">Litres, layers,</text>
+            <text class="s" x="384" y="193">3D assembly view</text>
+
+            <polygon class="dia" points="472,170 532,126 592,170 532,214"/>
+            <text class="t" x="532" y="167">Sold</text>
+            <text class="t" x="532" y="183">online?</text>
+
+            <rect class="node" x="320" y="250" width="128" height="66" rx="10"/>
+            <text class="t" x="384" y="274">Compare</text>
+            <text class="s" x="384" y="292">Up to 4 products</text>
+            <text class="s" x="384" y="306">side by side</text>
+
+            <!-- buy row -->
+            <rect class="node buy" x="620" y="41" width="128" height="66" rx="10"/>
+            <text class="t" x="684" y="65">Add to Cart</text>
+            <text class="s" x="684" y="83">or Buy Now</text>
+
+            <rect class="node buy" x="772" y="41" width="128" height="66" rx="10"/>
+            <text class="t" x="836" y="65">Checkout</text>
+            <text class="s" x="836" y="83">Pincode, OTP login,</text>
+            <text class="s" x="836" y="97">pay via Razorpay</text>
+
+            <rect class="node buy" x="924" y="41" width="128" height="66" rx="10"/>
+            <text class="t" x="988" y="65">Order confirmed</text>
+            <text class="s" x="988" y="83">GST invoice, track</text>
+            <text class="s" x="988" y="97">in My Account</text>
+
+            <!-- enquiry row -->
+            <rect class="node enq" x="620" y="233" width="128" height="66" rx="10"/>
+            <text class="t" x="684" y="257">Enquire Now</text>
+            <text class="s" x="684" y="275">Form pre-filled</text>
+            <text class="s" x="684" y="289">with the product</text>
+
+            <rect class="node enq" x="772" y="233" width="128" height="66" rx="10"/>
+            <text class="t" x="836" y="257">Sales team</text>
+            <text class="s" x="836" y="275">Lead routed to</text>
+            <text class="s" x="836" y="289">the right state</text>
+
+            <rect class="node enq" x="924" y="233" width="128" height="66" rx="10"/>
+            <text class="t" x="988" y="257">Call back</text>
+            <text class="s" x="988" y="275">or nearest dealer</text>
+          </svg>
+        </div>
+        <figcaption>Every product page leads to one of two actions. Products enabled for online sale show Add to Cart and Buy Now. Every other product shows Enquire Now. Your team can switch any product, or any single size, between the two in the admin panel.</figcaption>
+      </figure>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <h3>Scanning the QR code for warranty</h3>
+        <div class="legend">
+          <span><i class="sw go"></i>Warranty active / claim resolved</span>
+        </div>
+      </div>
+      <figure>
+        <p class="swipe-hint">Swipe sideways to see the whole chart →</p>
+        <div class="scroll">
+          <svg class="fc" viewBox="0 0 1068 288" role="img" aria-label="Customer scans the QR code and sees a genuine-product check. If the product is not yet registered they log in with an OTP, register it with purchase date, dealer and invoice, the warranty becomes active and appears in My Products. If it is already registered, they see their own warranty card or, if it belongs to someone else, a masked owner and a support contact. Later, a claim raised from My Products is assigned to the regional service team, visited and resolved.">
+            <defs>
+              <marker id="b-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="mk" d="M0,0 L10,5 L0,10 z"/></marker>
+            </defs>
+
+            <!-- edges -->
+            <path class="edge" d="M144 86 H167" marker-end="url(#b-arr)"/>
+            <path class="edge" d="M296 86 H319" marker-end="url(#b-arr)"/>
+            <path class="edge" d="M440 86 H463" marker-end="url(#b-arr)"/>
+            <path class="edge" d="M592 86 H615" marker-end="url(#b-arr)"/>
+            <path class="edge" d="M744 86 H767" marker-end="url(#b-arr)"/>
+            <path class="edge" d="M896 86 H919" marker-end="url(#b-arr)"/>
+            <path class="edge" d="M380 130 V172 H80 V205" marker-end="url(#b-arr)"/>
+            <path class="edge" d="M232 172 V205" marker-end="url(#b-arr)"/>
+            <path class="edge" d="M984 120 V205" marker-end="url(#b-arr)"/>
+            <path class="edge" d="M920 239 H897" marker-end="url(#b-arr)"/>
+            <path class="edge" d="M768 239 H745" marker-end="url(#b-arr)"/>
+            <path class="edge" d="M616 239 H593" marker-end="url(#b-arr)"/>
+
+            <!-- labels -->
+            <text class="lbl" x="452" y="77" text-anchor="middle">No</text>
+            <text class="lbl" x="388" y="158">Yes</text>
+            <text class="row-lbl" x="464" y="196">IF THERE IS A PROBLEM LATER</text>
+
+            <!-- main row -->
+            <rect class="node key" x="16" y="53" width="128" height="66" rx="10"/>
+            <text class="t" x="80" y="77">Scans QR</text>
+            <text class="s" x="80" y="95">Phone camera,</text>
+            <text class="s" x="80" y="109">no app needed</text>
+
+            <rect class="node" x="168" y="53" width="128" height="66" rx="10"/>
+            <text class="t" x="232" y="77">Genuine check</text>
+            <text class="s" x="232" y="95">Model, plant and</text>
+            <text class="s" x="232" y="109">manufacture date</text>
+
+            <polygon class="dia" points="320,86 380,42 440,86 380,130"/>
+            <text class="t" x="380" y="83">Already</text>
+            <text class="t" x="380" y="99">registered?</text>
+
+            <rect class="node" x="464" y="53" width="128" height="66" rx="10"/>
+            <text class="t" x="528" y="77">OTP login</text>
+            <text class="s" x="528" y="95">Mobile number,</text>
+            <text class="s" x="528" y="109">no password</text>
+
+            <rect class="node" x="616" y="53" width="128" height="66" rx="10"/>
+            <text class="t" x="680" y="77">Registers</text>
+            <text class="s" x="680" y="95">Purchase date,</text>
+            <text class="s" x="680" y="109">dealer, invoice</text>
+
+            <rect class="node go" x="768" y="53" width="128" height="66" rx="10"/>
+            <text class="t" x="832" y="77">Warranty active</text>
+            <text class="s" x="832" y="95">Certificate by SMS,</text>
+            <text class="s" x="832" y="109">WhatsApp, email</text>
+
+            <rect class="node" x="920" y="53" width="128" height="66" rx="10"/>
+            <text class="t" x="984" y="77">My Products</text>
+            <text class="s" x="984" y="95">Every product,</text>
+            <text class="s" x="984" y="109">status, expiry</text>
+
+            <!-- already registered -->
+            <rect class="node enq" x="16" y="206" width="128" height="66" rx="10"/>
+            <text class="t" x="80" y="230">Other owner</text>
+            <text class="s" x="80" y="248">Owner masked,</text>
+            <text class="s" x="80" y="262">contact support</text>
+
+            <rect class="node" x="168" y="206" width="128" height="66" rx="10"/>
+            <text class="t" x="232" y="230">Your product</text>
+            <text class="s" x="232" y="248">Warranty card,</text>
+            <text class="s" x="232" y="262">certificate</text>
+
+            <!-- claim row, right to left -->
+            <rect class="node" x="920" y="206" width="128" height="66" rx="10"/>
+            <text class="t" x="984" y="230">Raise a claim</text>
+            <text class="s" x="984" y="248">Issue and photos</text>
+            <text class="s" x="984" y="262">from My Products</text>
+
+            <rect class="node" x="768" y="206" width="128" height="66" rx="10"/>
+            <text class="t" x="832" y="230">Assigned</text>
+            <text class="s" x="832" y="248">Regional service</text>
+            <text class="s" x="832" y="262">team, SLA timer</text>
+
+            <rect class="node" x="616" y="206" width="128" height="66" rx="10"/>
+            <text class="t" x="680" y="230">Visit and fix</text>
+            <text class="s" x="680" y="248">Repair or</text>
+            <text class="s" x="680" y="262">replacement</text>
+
+            <rect class="node go" x="464" y="206" width="128" height="66" rx="10"/>
+            <text class="t" x="528" y="230">Resolved</text>
+            <text class="s" x="528" y="248">Customer rates</text>
+            <text class="s" x="528" y="262">the service</text>
+          </svg>
+        </div>
+        <figcaption>If each product carries its own QR code, the scan proves the product is genuine and the same product cannot be registered twice. One login works for both orders and warranties. The exact QR setup depends on how your plants print labels (see What we need from you).</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section id="team-flows" aria-labelledby="tf-h">
+    <div class="sec-head">
+      <p class="kicker">User flow · Your teams</p>
+      <h2 id="tf-h">How each team works in the admin panel</h2>
+      <p class="intro">Each team logs in to the same admin panel and sees only its own section. Changes appear on the live website within seconds.</p>
+    </div>
+    <div class="panel">
+      <div class="lanes">
+        <div class="lane">
+          <div class="lane-who">SEO team<small>Pages, meta, schema</small></div>
+          <ol class="steps">
+            <li><span>Edits a page: text, meta title, description, schema</span></li>
+            <li><span>Previews it on the real site</span></li>
+            <li><span>Publishes</span></li>
+            <li><span>Live in seconds, sitemap updates itself</span></li>
+          </ol>
+        </div>
+        <div class="lane">
+          <div class="lane-who">Content team<small>Blog</small></div>
+          <ol class="steps">
+            <li><span>Writes a post</span></li>
+            <li><span>Adds images, FAQs, related products</span></li>
+            <li><span>Schedules or publishes</span></li>
+            <li><span>Live on the blog and in Google</span></li>
+          </ol>
+        </div>
+        <div class="lane">
+          <div class="lane-who">HR<small>Careers</small></div>
+          <ol class="steps">
+            <li><span>Posts a job</span></li>
+            <li><span>Shows on Careers and Google Jobs</span></li>
+            <li><span>Candidates apply with CV</span></li>
+            <li><span>Shortlist, interview, hire</span></li>
+          </ol>
+        </div>
+        <div class="lane">
+          <div class="lane-who">Sales<small>Enquiries</small></div>
+          <ol class="steps">
+            <li><span>Enquiry arrives with the product</span></li>
+            <li><span>Sent to that state's team</span></li>
+            <li><span>Follow-up notes in admin</span></li>
+            <li><span>Converted or passed to a dealer</span></li>
+          </ol>
+        </div>
+        <div class="lane">
+          <div class="lane-who">Store<small>Online orders</small></div>
+          <ol class="steps">
+            <li><span>Order paid, GST invoice created</span></li>
+            <li><span>Pack and ship via Shiprocket</span></li>
+            <li><span>Customer gets tracking link</span></li>
+            <li><span>Delivered</span></li>
+          </ol>
+        </div>
+        <div class="lane">
+          <div class="lane-who">Service<small>Warranty claims</small></div>
+          <ol class="steps">
+            <li><span>Claim arrives with photos</span></li>
+            <li><span>Assigned by region</span></li>
+            <li><span>Visit scheduled</span></li>
+            <li><span>Resolved and rated</span></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="technology" aria-labelledby="tech-h">
+    <div class="sec-head">
+      <p class="kicker">Technology</p>
+      <h2 id="tech-h">How the system fits together</h2>
+      <p class="intro">The website (Next.js) and the backend (PHP and MySQL) are separate. Your content lives in one place and shows up everywhere it's used.</p>
+    </div>
+    <div class="panel">
+      <figure>
+        <p class="swipe-hint">Swipe sideways to see the whole chart →</p>
+        <div class="scroll">
+          <svg class="fc stack-svg" viewBox="0 0 1000 372" role="img" aria-label="Customers visit the Next.js website and Vectus teams log in to the Laravel admin panel, both through Cloudflare. The website asks the backend for pages and products, and the backend pushes updates to the website in seconds. The backend connects to the MySQL database, media storage, Razorpay, Shiprocket, SMS and WhatsApp, and Google services.">
+            <defs>
+              <marker id="c-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="mk" d="M0,0 L10,5 L0,10 z"/></marker>
+              <marker id="c-arr-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="mk-b" d="M0,0 L10,5 L0,10 z"/></marker>
+            </defs>
+
+            <rect class="node" x="40" y="16" width="360" height="56" rx="10"/>
+            <text class="t" x="220" y="40">Customers</text>
+            <text class="s" x="220" y="58">Phones and desktop browsers</text>
+
+            <rect class="node" x="600" y="16" width="360" height="56" rx="10"/>
+            <text class="t" x="780" y="40">Vectus teams</text>
+            <text class="s" x="780" y="58">SEO · Content · HR · Sales · Store · Service</text>
+
+            <rect class="band" x="40" y="88" width="920" height="24" rx="6"/>
+            <text class="m" x="500" y="104">Cloudflare · CDN, SSL, firewall, bot protection</text>
+
+            <path class="edge" d="M220 72 V139" marker-end="url(#c-arr)"/>
+            <path class="edge" d="M780 72 V139" marker-end="url(#c-arr)"/>
+            <text class="lbl" x="230" y="130">visits www.vectus.in</text>
+            <text class="lbl" x="790" y="130">logs in to the admin panel</text>
+
+            <rect class="node buy" x="40" y="140" width="360" height="110" rx="12"/>
+            <text class="t-lg" x="220" y="168">Website</text>
+            <text class="s2" x="220" y="190">Next.js · React · TypeScript</text>
+            <text class="s2" x="220" y="208">GSAP + Lenis animations</text>
+            <text class="m" x="220" y="232">www.vectus.in</text>
+
+            <rect class="node buy" x="600" y="140" width="360" height="110" rx="12"/>
+            <text class="t-lg" x="780" y="168">Backend + admin panel</text>
+            <text class="s2" x="780" y="190">PHP 8 · Laravel · Filament</text>
+            <text class="s2" x="780" y="208">Content, orders, careers, warranty</text>
+            <text class="m" x="780" y="232">admin.vectus.in</text>
+
+            <path class="edge buy" d="M400 182 H599" marker-end="url(#c-arr-b)"/>
+            <text class="lbl" x="500" y="174" text-anchor="middle">asks for pages, products</text>
+            <path class="edge buy" d="M600 214 H401" marker-end="url(#c-arr-b)"/>
+            <text class="lbl" x="500" y="232" text-anchor="middle">sends updates in seconds</text>
+
+            <path class="edge" d="M780 250 V280"/>
+            <path class="edge" d="M110 280 H890"/>
+            <text class="lbl" x="788" y="272">backend connects to</text>
+            <path class="edge" d="M110 280 V299" marker-end="url(#c-arr)"/>
+            <path class="edge" d="M266 280 V299" marker-end="url(#c-arr)"/>
+            <path class="edge" d="M422 280 V299" marker-end="url(#c-arr)"/>
+            <path class="edge" d="M578 280 V299" marker-end="url(#c-arr)"/>
+            <path class="edge" d="M734 280 V299" marker-end="url(#c-arr)"/>
+            <path class="edge" d="M890 280 V299" marker-end="url(#c-arr)"/>
+
+            <rect class="node" x="40" y="300" width="140" height="56" rx="10"/>
+            <text class="t" x="110" y="324">MySQL 8</text>
+            <text class="s" x="110" y="342">Database + cache</text>
+
+            <rect class="node" x="196" y="300" width="140" height="56" rx="10"/>
+            <text class="t" x="266" y="324">Media storage</text>
+            <text class="s" x="266" y="342">Images, PDFs, video</text>
+
+            <rect class="node" x="352" y="300" width="140" height="56" rx="10"/>
+            <text class="t" x="422" y="324">Razorpay</text>
+            <text class="s" x="422" y="342">UPI, cards, wallets</text>
+
+            <rect class="node" x="508" y="300" width="140" height="56" rx="10"/>
+            <text class="t" x="578" y="324">Shiprocket</text>
+            <text class="s" x="578" y="342">Delivery, tracking</text>
+
+            <rect class="node" x="664" y="300" width="140" height="56" rx="10"/>
+            <text class="t" x="734" y="324">SMS + WhatsApp</text>
+            <text class="s" x="734" y="342">OTP and updates</text>
+
+            <rect class="node" x="820" y="300" width="140" height="56" rx="10"/>
+            <text class="t" x="890" y="324">Google</text>
+            <text class="s" x="890" y="342">Maps, Analytics</text>
+          </svg>
+        </div>
+        <figcaption>Customers only interact with the website. The website gets all its content from the backend, and only the backend touches the database, payments and messaging. That keeps customer data in one secure place.</figcaption>
+      </figure>
+    </div>
+
+    <div class="stack">
+      <div class="stack-card"><h3>Website</h3><p class="tools">Next.js 16 · React 19 · TypeScript · Tailwind CSS</p><p>Pages are built on the server, so they load fast and Google can read every word.</p></div>
+      <div class="stack-card"><h3>Animation</h3><p class="tools">GSAP (ScrollTrigger, SplitText, Flip) · Lenis</p><p>Smooth scrolling, text reveals and scroll-driven product assembly. Animation is reduced automatically on slow phones and for people who prefer less motion.</p></div>
+      <div class="stack-card"><h3>Backend and admin</h3><p class="tools">PHP 8.3+ · Laravel · Filament</p><p>One admin panel for content, SEO, products, orders, careers and warranty, with separate access for each team.</p></div>
+      <div class="stack-card"><h3>Database</h3><p class="tools">MySQL 8 · Redis cache</p><p>Content, orders and warranty records in one database, with a cache to keep pages fast.</p></div>
+      <div class="stack-card"><h3>Hosting and security</h3><p class="tools">Cloudflare · AWS Mumbai or your server · SSL</p><p>Servers in India, a firewall and bot protection in front, and daily backups.</p></div>
+      <div class="stack-card"><h3>Connected services</h3><p class="tools">Razorpay · Shiprocket · DLT SMS · WhatsApp · Google</p><p>Payments, delivery, OTP login and messages, the dealer map, Analytics and Search Console.</p></div>
+    </div>
+  </section>
+
+  <section id="timeline" aria-labelledby="tl-h">
+    <div class="sec-head">
+      <p class="kicker">Timeline</p>
+      <h2 id="tl-h">21 days from kickoff to go-live</h2>
+      <p class="intro">Design, backend, website, animation and testing run in parallel, which is why the bars overlap. Go-live is Day 20, and Day 21 is for monitoring and handover.</p>
+    </div>
+    <div class="panel">
+      <div class="legend">
+        <span><i class="sw bar"></i>Our team</span>
+        <span><i class="sw client"></i>Needs your team</span>
+        <span><i class="sw launch"></i>Launch</span>
+        <span><i class="sw ms"></i>Checkpoint</span>
+      </div>
+      <p class="swipe-hint">Swipe sideways to see all 21 days →</p>
+      <div class="scroll">
+        <div class="gantt" role="img" aria-label="21-day timeline. Days 1 to 2 kickoff and access. Days 1 to 4 design. Days 2 to 8 backend and admin. Days 4 to 9 content migration. Days 5 to 14 website pages and animations. Days 5 to 13 3D assembly animation. Days 8 to 13 online store. Days 9 to 13 blog, careers, enquiries and dealer locator. Days 12 to 17 QR warranty portal. Days 14 to 18 SEO setup. Days 15 to 19 testing with your feedback. Days 18 to 19 training. Day 20 go-live. Days 20 to 21 monitoring and handover.">
+          <div class="g-head">
+            <div class="g-lab"></div>
+            <div class="g-week" style="grid-column:2 / span 7">Week 1 · Design &amp; setup</div>
+            <div class="g-week" style="grid-column:9 / span 7">Week 2 · Build</div>
+            <div class="g-week" style="grid-column:16 / span 7">Week 3 · Test &amp; launch</div>
+          </div>
+          <div class="g-days">
+            <div class="g-lab">Day</div>
+            <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span>
+            <span>8</span><span>9</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span>
+            <span>15</span><span>16</span><span>17</span><span>18</span><span>19</span><span>20</span><span>21</span>
+          </div>
+
+          <div class="g-row"><div class="g-lab">Kickoff, access, Shopify export<small>Day 1–2</small></div><div class="g-track"></div><div class="g-bar client" style="grid-column:2 / 4"></div></div>
+          <div class="g-row"><div class="g-lab">UI/UX design in Figma<small>Day 1–4</small></div><div class="g-track"></div><div class="g-bar" style="grid-column:2 / 6"></div></div>
+          <div class="g-row"><div class="g-lab">Backend, admin panel, SEO tools<small>Day 2–8</small></div><div class="g-track"></div><div class="g-bar" style="grid-column:3 / 10"></div></div>
+          <div class="g-row"><div class="g-lab">Move products, pages and blog<small>Day 4–9</small></div><div class="g-track"></div><div class="g-bar" style="grid-column:5 / 11"></div></div>
+          <div class="g-row"><div class="g-lab">Website pages + GSAP animations<small>Day 5–14</small></div><div class="g-track"></div><div class="g-bar" style="grid-column:6 / 16"></div></div>
+          <div class="g-row"><div class="g-lab">3D product assembly animation<small>Day 5–13</small></div><div class="g-track"></div><div class="g-bar" style="grid-column:6 / 15"></div></div>
+          <div class="g-row"><div class="g-lab">Online store, Razorpay, Shiprocket<small>Day 8–13</small></div><div class="g-track"></div><div class="g-bar" style="grid-column:9 / 15"></div></div>
+          <div class="g-row"><div class="g-lab">Blog, careers, enquiries, dealers<small>Day 9–13</small></div><div class="g-track"></div><div class="g-bar" style="grid-column:10 / 15"></div></div>
+          <div class="g-row"><div class="g-lab">QR warranty portal + claims<small>Day 12–17</small></div><div class="g-track"></div><div class="g-bar" style="grid-column:13 / 19"></div></div>
+          <div class="g-row"><div class="g-lab">SEO: redirects, schema, speed<small>Day 14–18</small></div><div class="g-track"></div><div class="g-bar" style="grid-column:15 / 20"></div></div>
+          <div class="g-row"><div class="g-lab">Testing + your feedback<small>Day 15–19</small></div><div class="g-track"></div><div class="g-bar client" style="grid-column:16 / 21"></div></div>
+          <div class="g-row"><div class="g-lab">Training for your teams<small>Day 18–19</small></div><div class="g-track"></div><div class="g-bar client" style="grid-column:19 / 21"></div></div>
+          <div class="g-row"><div class="g-lab">Go-live<small>Day 20</small></div><div class="g-track"></div><div class="g-bar launch" style="grid-column:21 / 22"></div></div>
+          <div class="g-row"><div class="g-lab">Monitoring + handover<small>Day 20–21</small></div><div class="g-track"></div><div class="g-bar launch" style="grid-column:21 / 23"></div></div>
+          <div class="g-row ms"><div class="g-lab">Checkpoints</div><div class="g-track"></div>
+            <span class="g-ms" style="grid-column:3" title="Day 2: all access received"></span>
+            <span class="g-ms" style="grid-column:5" title="Day 4: design approved"></span>
+            <span class="g-ms" style="grid-column:11" title="Day 10: staging link shared"></span>
+            <span class="g-ms" style="grid-column:16" title="Day 15: all features working"></span>
+            <span class="g-ms" style="grid-column:20" title="Day 19: your sign-off"></span>
+            <span class="g-ms launch" style="grid-column:21" title="Day 20: go-live"></span>
+          </div>
+        </div>
+      </div>
+      <ol class="checkpoints">
+        <li><b>Day 2</b>All access received</li>
+        <li><b>Day 4</b>Design approved</li>
+        <li><b>Day 10</b>Staging link to follow progress</li>
+        <li><b>Day 15</b>All features working on staging</li>
+        <li><b>Day 19</b>Your sign-off</li>
+        <li class="launch"><b>Day 20</b>Go-live</li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="from-you" aria-labelledby="need-h">
+    <div class="sec-head">
+      <p class="kicker">What we need from you</p>
+      <h2 id="need-h">Inputs that keep the 21 days on track</h2>
+      <p class="intro">The timeline starts when the Day 1 items reach us. If something arrives late, go-live usually moves by about the same number of days.</p>
+    </div>
+
+    <div class="needs">
+      <div class="need">
+        <div class="need-when"><span class="chip">By Day 1</span><span>So we can start</span></div>
+        <ul>
+          <li><div><strong>Shopify admin access.</strong> <span>A staff account so we can export products, collections, pages, blog posts and images.</span></div></li>
+          <li><div><strong>Google Search Console, Analytics (GA4) and Tag Manager access.</strong> <span>To protect current rankings and keep tracking working.</span></div></li>
+          <li><div><strong>Domain and DNS access.</strong> <span>Needed on launch day. We copy your email and employee-portal records first so nothing else breaks.</span></div></li>
+          <li><div><strong>Hosting decision.</strong> <span>Your own AWS or cloud account, or we set it up for you.</span></div></li>
+          <li><div><strong>One decision-maker.</strong> <span>A single contact who can approve things within 24 hours.</span></div></li>
+        </ul>
+      </div>
+
+      <div class="need">
+        <div class="need-when"><span class="chip">By Day 2</span><span>For design and the store</span></div>
+        <ul>
+          <li><div><strong>Logo files, brand colours, fonts and brand guidelines.</strong></div></li>
+          <li><div><strong>Which products are sold online.</strong> <span>The list of products (or sizes) with Buy Now. Everything else stays enquiry only.</span></div></li>
+          <li><div><strong>Details for online products.</strong> <span>Selling price, MRP, weight, dimensions, HSN code and GST rate.</span></div></li>
+        </ul>
+      </div>
+
+      <div class="need">
+        <div class="need-when"><span class="chip">By Day 3</span><span>Accounts, warranty and animation</span></div>
+        <ul>
+          <li><div><strong>Razorpay account with KYC complete,</strong> <span>and its API keys.</span></div></li>
+          <li><div><strong>Shiprocket account</strong> <span>and your pickup or warehouse address.</span></div></li>
+          <li><div><strong>GSTIN and invoice details.</strong> <span>Company name and address to print on GST invoices.</span></div></li>
+          <li><div><strong>SMS provider with a DLT-approved sender ID and OTP template.</strong> <span>Plus WhatsApp Business API access, if you have it.</span></div></li>
+          <li><div><strong>QR code details.</strong> <span>A photo of a current product label, what the QR opens today, whether each unit should get its own code, and who prints the labels.</span></div></li>
+          <li><div><strong>Warranty terms for each product line.</strong> <span>Years, conditions, and whether an invoice is required.</span></div></li>
+          <li><div><strong>CAD/3D files or detailed photos of 1–2 flagship products</strong> <span>for the assembly animation, for example the Ten-X tank.</span></div></li>
+        </ul>
+      </div>
+
+      <div class="need">
+        <div class="need-when"><span class="chip">By Day 5</span><span>People, lists and policies</span></div>
+        <ul>
+          <li><div><strong>Dealer and distributor list in Excel.</strong> <span>Name, address, pincode and phone for the dealer locator.</span></div></li>
+          <li><div><strong>Who receives enquiries for each state.</strong> <span>Names and email addresses.</span></div></li>
+          <li><div><strong>HR details.</strong> <span>Current job openings and the email address for applications.</span></div></li>
+          <li><div><strong>Service team contacts for warranty claims,</strong> <span>by region.</span></div></li>
+          <li><div><strong>Policy text, or approval of our drafts.</strong> <span>Refund, shipping, cancellation, warranty and privacy.</span></div></li>
+          <li><div><strong>Staff who need admin logins.</strong> <span>Names and roles for SEO, content, HR, sales, store and service.</span></div></li>
+        </ul>
+      </div>
+
+      <div class="need">
+        <div class="need-when"><span class="chip">During</span><span>Quick turnarounds</span></div>
+        <ul>
+          <li><div><strong>Design feedback within 24 hours</strong> <span>of each share (approval on Day 4).</span></div></li>
+          <li><div><strong>New photos or copy by Day 7.</strong> <span>Otherwise we move the existing content as it is.</span></div></li>
+          <li><div><strong>Testing feedback as one combined list</strong> <span>between Day 16 and Day 19.</span></div></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="assumptions">
+      <h3>What the 21-day plan includes</h3>
+      <ul>
+        <li>Existing text and images move across as they are. Rewritten copy and new photography can follow after launch.</li>
+        <li>The assembly animation covers 1–2 flagship products. More products can be added after launch.</li>
+        <li>Stock is managed in the admin panel. Connecting to your ERP is a separate, later step.</li>
+        <li>The site launches in English and is built so Hindi can be added later.</li>
+        <li>One round of design changes and one round of testing changes fit inside the 21 days.</li>
+        <li>QR labels are printed by your plants or label vendor, using the code files the system generates.</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    <span>Prepared for Vectus Polymers Pvt. Ltd.</span>
+    <span>Day 1 is the kickoff day, once the Day 1 items are received.</span>
+  </footer>
+
+</div>
+</body>
+</html>
